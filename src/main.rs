@@ -40,13 +40,26 @@ impl PassengerStatus for RealPassengerStatus {
         let output = Command::new("sh")
             .arg("-c")
             .arg("passenger-status | grep 'Requests in queue' | awk '{print $5}'")
-            .output()
-            .expect("failed to execute process");
+            .output();
 
-        let output_str = String::from_utf8_lossy(&output.stdout);
-        output_str.trim().parse::<i32>().ok()
+        match output {
+            Ok(output) => {
+                if output.status.success() {
+                    let output_str = String::from_utf8_lossy(&output.stdout);
+                    output_str.trim().parse::<i32>().ok()
+                } else {
+                    // If the command failed (e.g., not installed, or Passenger not running), treat as queue full.
+                    None
+                }
+            },
+            Err(_) => {
+                // Handle the case where the `sh` command itself couldn't be executed, indicating a more severe problem.
+                None
+            }
+        }
     }
 }
+
 
 #[cfg(test)]
 mod tests {
