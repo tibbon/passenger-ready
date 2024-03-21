@@ -1,5 +1,7 @@
 # passenger-ready
 
+[![Rust](https://github.com/tibbon/passenger-ready/actions/workflows/rust.yml/badge.svg)](https://github.com/tibbon/passenger-ready/actions/workflows/rust.yml)
+
 This offers a health check to say if passenger is ready to receive more traffic, or if it's queue is full.
 
 It can use environment variables to configure the port it runs on, and the max size of the pool. It returns false if the pool already reports it's capacity to be 80% full.
